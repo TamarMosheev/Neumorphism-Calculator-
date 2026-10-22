@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment files (the example file is meant to be committed)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# Test coverage
+coverage/
+
+# Editor and IDE settings
+.vscode/
+.idea/
+
+# Local-only overrides
+*.local
+
+# OS-generated files
+.DS_Store
+Thumbs.db

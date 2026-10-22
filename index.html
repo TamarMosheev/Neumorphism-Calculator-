@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neumorphism Calculator</title>
+</head>
+<body>
+  <main class="app">
+    <button type="button" class="mode-toggle" role="switch" aria-checked="false" aria-label="Switch calculator mode">
+      <span class="mode-toggle__label">NORMAL MODE</span>
+      <span class="mode-toggle__knob" aria-hidden="true"></span>
+    </button>
+
+    <section class="calculator" aria-label="Calculator">
+      <div class="display">
+        <output class="display__value" aria-live="polite">0</output>
+        <span class="display__icon" aria-hidden="true"></span>
+      </div>
+
+      <div class="keypad">
+        <div class="keypad__row">
+          <button type="button" class="btn btn--function" data-action="clear">AC</button>
+          <button type="button" class="btn btn--function" data-action="toggle-sign">+/-</button>
+          <button type="button" class="btn btn--function" data-action="percent">%</button>
+          <button type="button" class="btn btn--operator" data-operator="divide">÷</button>
+        </div>
+
+        <div class="keypad__row">
+          <button type="button" class="btn btn--number" data-number="7">7</button>
+          <button type="button" class="btn btn--number" data-number="8">8</button>
+          <button type="button" class="btn btn--number" data-number="9">9</button>
+          <button type="button" class="btn btn--operator" data-operator="multiply">×</button>
+        </div>
+
+        <div class="keypad__row">
+          <button type="button" class="btn btn--number" data-number="4">4</button>
+          <button type="button" class="btn btn--number" data-number="5">5</button>
+          <button type="button" class="btn btn--number" data-number="6">6</button>
+          <button type="button" class="btn btn--operator" data-operator="subtract">−</button>
+        </div>
+
+        <div class="keypad__row">
+          <button type="button" class="btn btn--number" data-number="1">1</button>
+          <button type="button" class="btn btn--number" data-number="2">2</button>
+          <button type="button" class="btn btn--number" data-number="3">3</button>
+          <button type="button" class="btn btn--operator" data-operator="add">+</button>
+        </div>
+
+        <div class="keypad__row">
+          <button type="button" class="btn btn--number btn--wide" data-number="0">0</button>
+          <button type="button" class="btn btn--number" data-action="decimal">.</button>
+          <button type="button" class="btn btn--equals" data-action="equals">=</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

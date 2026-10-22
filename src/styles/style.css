@@ -1,0 +1,301 @@
+/*
+ * Registered colour properties let gradients cross-fade between themes
+ * (plain custom properties would switch instantly).
+ */
+@property --calc-a { syntax: "<color>"; inherits: true; initial-value: #fafbfd; }
+@property --calc-b { syntax: "<color>"; inherits: true; initial-value: #e9ebf2; }
+@property --surf-a { syntax: "<color>"; inherits: true; initial-value: #fbfcfe; }
+@property --surf-b { syntax: "<color>"; inherits: true; initial-value: #eceef5; }
+@property --disp-a { syntax: "<color>"; inherits: true; initial-value: #eceef5; }
+@property --disp-b { syntax: "<color>"; inherits: true; initial-value: #f8f9fc; }
+
+/* NORMAL MODE (light) theme */
+:root {
+  --bg-base: #eef0f6;
+  --shadow-dark: rgba(163, 172, 196, 0.55);
+  --shadow-light: rgba(255, 255, 255, 0.95);
+
+  --calc-a: #fafbfd;
+  --calc-b: #e9ebf2;
+  --calc-inset-hi: rgba(255, 255, 255, 0.9);
+  --calc-inset-lo: rgba(190, 197, 215, 0.25);
+
+  --surf-a: #fbfcfe;
+  --surf-b: #eceef5;
+
+  --disp-a: #eceef5;
+  --disp-b: #f8f9fc;
+  --disp-inset-dark: rgba(163, 172, 196, 0.45);
+  --disp-inset-light: rgba(255, 255, 255, 0.95);
+
+  --text: #5b6275;
+  --text-toggle: #7a86a6;
+  --text-operator: #8a97b8;
+  --text-ac: #d27a82;
+  --icon-border: #a9b3cc;
+
+  --glow-light-opacity: 1;
+  --glow-dark-opacity: 0;
+
+  --theme-duration: 0.45s;
+}
+
+/* PRO MODE (dark) theme: only the variables change */
+body.theme-pro {
+  --bg-base: #1b1d23;
+  --shadow-dark: rgba(0, 0, 0, 0.65);
+  --shadow-light: rgba(255, 255, 255, 0.045);
+
+  --calc-a: #15171b;
+  --calc-b: #0e1013;
+  --calc-inset-hi: rgba(255, 255, 255, 0.05);
+  --calc-inset-lo: rgba(0, 0, 0, 0.5);
+
+  --surf-a: #20232a;
+  --surf-b: #16181d;
+
+  --disp-a: #0b0c0f;
+  --disp-b: #15171c;
+  --disp-inset-dark: rgba(0, 0, 0, 0.75);
+  --disp-inset-light: rgba(255, 255, 255, 0.06);
+
+  --text: #c3c8d4;
+  --text-toggle: #a4adc2;
+  --text-operator: #8fa3d6;
+  --text-ac: #cf7a82;
+  --icon-border: #5d6579;
+
+  --glow-light-opacity: 0;
+  --glow-dark-opacity: 1;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg-base);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  transition:
+    background-color var(--theme-duration) ease,
+    color var(--theme-duration) ease;
+}
+
+/* Ambient glows: two fixed layers that cross-fade between themes */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity var(--theme-duration) ease;
+}
+
+body::before {
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(130, 170, 255, 0.35) 0, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(255, 150, 200, 0.3) 0, transparent 45%);
+  opacity: var(--glow-light-opacity);
+}
+
+body::after {
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(80, 110, 255, 0.2) 0, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(150, 90, 255, 0.18) 0, transparent 45%);
+  opacity: var(--glow-dark-opacity);
+}
+
+/* Page layout: toggle stacked above calculator, centered both ways */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 24px 16px;
+}
+
+/* Mode toggle: raised pill with a blue knob on the right */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 190px;
+  height: 44px;
+  padding: 0 8px 0 22px;
+  border: 0;
+  border-radius: 22px;
+  background: linear-gradient(145deg, var(--surf-a), var(--surf-b));
+  box-shadow:
+    8px 8px 16px var(--shadow-dark),
+    -8px -8px 16px var(--shadow-light);
+  color: var(--text-toggle);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    color var(--theme-duration) ease,
+    box-shadow var(--theme-duration) ease,
+    --surf-a var(--theme-duration) ease,
+    --surf-b var(--theme-duration) ease;
+}
+
+.mode-toggle__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.mode-toggle__knob {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #6f9bf5, #4f7fe0);
+  box-shadow: 3px 4px 8px rgba(79, 127, 224, 0.45);
+}
+
+/* Calculator outer body */
+.calculator {
+  width: 100%;
+  max-width: 280px;
+  padding: 28px 24px;
+  border-radius: 44px;
+  background: linear-gradient(145deg, var(--calc-a), var(--calc-b));
+  box-shadow:
+    20px 24px 48px var(--shadow-dark),
+    -16px -16px 40px var(--shadow-light),
+    inset 2px 2px 4px var(--calc-inset-hi),
+    inset -2px -2px 6px var(--calc-inset-lo);
+  transition:
+    box-shadow var(--theme-duration) ease,
+    --calc-a var(--theme-duration) ease,
+    --calc-b var(--theme-duration) ease;
+}
+
+/* Keypad: 4-column grid. Row wrappers are flattened so the 0 key can span two columns. */
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(4, 48px);
+  justify-content: space-between;
+  row-gap: 16px;
+  margin-top: 24px;
+}
+
+.keypad__row {
+  display: contents;
+}
+
+.btn {
+  height: 48px;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Round raised buttons: numbers, functions, operators, equals */
+.btn--number,
+.btn--function,
+.btn--operator,
+.btn--equals {
+  width: 48px;
+  justify-self: center;
+  border: 0;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--surf-a), var(--surf-b));
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 500;
+  box-shadow:
+    6px 6px 12px var(--shadow-dark),
+    -6px -6px 12px var(--shadow-light);
+  transition:
+    color var(--theme-duration) ease,
+    box-shadow var(--theme-duration) ease,
+    --surf-a var(--theme-duration) ease,
+    --surf-b var(--theme-duration) ease;
+}
+
+/* 0 button: pill spanning two columns */
+.btn--wide {
+  grid-column: span 2;
+  width: 100%;
+  border-radius: 24px;
+}
+
+/* AC: muted red */
+.btn--function[data-action="clear"] {
+  color: var(--text-ac);
+}
+
+/* Arithmetic operators: subtle blue-gray */
+.btn--operator {
+  color: var(--text-operator);
+  font-size: 22px;
+}
+
+/* Equals: solid medium blue with soft blue glow (same in both themes) */
+.btn--equals {
+  background: linear-gradient(145deg, #6f9bf5, #4f7fe0);
+  color: #fff;
+  font-size: 22px;
+  box-shadow:
+    6px 8px 16px rgba(79, 127, 224, 0.45),
+    -4px -4px 10px var(--shadow-light);
+}
+
+/* Display: recessed neumorphic panel */
+.display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 224px;
+  max-width: 100%;
+  height: 76px;
+  margin: 0 auto;
+  padding: 0 18px 0 20px;
+  border-radius: 22px;
+  background: linear-gradient(145deg, var(--disp-a), var(--disp-b));
+  box-shadow:
+    inset 5px 5px 10px var(--disp-inset-dark),
+    inset -5px -5px 10px var(--disp-inset-light);
+  transition:
+    box-shadow var(--theme-duration) ease,
+    --disp-a var(--theme-duration) ease,
+    --disp-b var(--theme-duration) ease;
+}
+
+.display__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--text);
+  transition: color var(--theme-duration) ease;
+}
+
+/* Small outlined rounded-square icon */
+.display__icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--icon-border);
+  border-radius: 6px;
+  transition: border-color var(--theme-duration) ease;
+}
