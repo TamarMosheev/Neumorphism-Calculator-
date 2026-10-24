@@ -10,8 +10,12 @@ export class InputHandler {
 
   constructor(private readonly root: ParentNode) {}
 
-  onModeToggle(callback: () => void): void {
-    this.bindClick(".mode-toggle", callback);
+  onCalculatorModeToggle(callback: () => void): void {
+    this.bindClick('[data-setting="calculator-mode"]', callback);
+  }
+
+  onAppearanceToggle(callback: () => void): void {
+    this.bindClick('[data-setting="appearance"]', callback);
   }
 
   onClear(callback: () => void): void {
@@ -28,6 +32,22 @@ export class InputHandler {
 
   onPercent(callback: () => void): void {
     this.bindClick('[data-action="percent"]', callback);
+  }
+
+  onOpenParenthesis(callback: () => void): void {
+    this.bindClick('[data-action="open-parenthesis"]', callback);
+  }
+
+  onCloseParenthesis(callback: () => void): void {
+    this.bindClick('[data-action="close-parenthesis"]', callback);
+  }
+
+  onSquare(callback: () => void): void {
+    this.bindClick('[data-action="square"]', callback);
+  }
+
+  onSquareRoot(callback: () => void): void {
+    this.bindClick('[data-action="square-root"]', callback);
   }
 
   onEquals(callback: () => void): void {

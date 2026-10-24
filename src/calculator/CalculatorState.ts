@@ -1,5 +1,8 @@
+import { negateText } from "./NumberEntry";
 import { formatNumber } from "./NumberFormatter";
 import type { Operator } from "./Operator";
+
+export { countDigits } from "./NumberEntry";
 
 /** A number the user is typing (exact text), or one the calculator computed (full precision). */
 export type Operand =
@@ -51,12 +54,7 @@ export function operandNumber(operand: Operand): number {
 export function negate(operand: Operand): Operand {
   if (operand.kind === "computed") return computed(-operand.value);
 
-  return typed(operand.text.startsWith("-") ? operand.text.slice(1) : `-${operand.text}`);
-}
-
-/** Digits in a typed number; the sign and the decimal point do not count. */
-export function countDigits(text: string): number {
-  return text.replace(/\D/g, "").length;
+  return typed(negateText(operand.text));
 }
 
 export function displayTextOf(state: CalculatorState): string {

@@ -2,6 +2,7 @@ import "./styles/style.css";
 import { CalculatorApp } from "./classes/CalculatorApp";
 import { InputHandler } from "./classes/InputHandler";
 import { CalculatorEngine } from "./calculator/CalculatorEngine";
+import { CalculatorModeSetting } from "./settings/CalculatorModeSetting";
 import { CalculatorUI } from "./ui/CalculatorUI";
 import { ThemeManager } from "./themes/ThemeManager";
 
@@ -13,6 +14,7 @@ const app = new CalculatorApp(
   new CalculatorUI(root),
   new ThemeManager(),
   new InputHandler(root),
+  new CalculatorModeSetting(),
 );
 
 app.start();

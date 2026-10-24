@@ -4,7 +4,6 @@ import {
   type PendingOperation,
   type Operand,
   computed,
-  countDigits,
   displayTextOf,
   ERROR_STATE,
   INITIAL_STATE,
@@ -12,6 +11,7 @@ import {
   operandNumber,
   typed,
 } from "./CalculatorState";
+import { appendDecimal, appendDigit, MAX_ENTRY_DIGITS } from "./NumberEntry";
 import { calculate, resolvePercent, type Operator } from "./Operator";
 
 /** What the next digit or decimal point should extend: the text typed so far ("" = a new operand). */
@@ -22,8 +22,8 @@ interface TypingBase {
 
 /** Calculator rules as transitions between `CalculatorState`s. Knows nothing about the DOM. */
 export class CalculatorEngine {
-  /** Longest number the user can type; every such number is exactly representable as a double. */
-  static readonly MAX_ENTRY_DIGITS = 15;
+  /** Longest number the user can type (the rule itself lives in NumberEntry). */
+  static readonly MAX_ENTRY_DIGITS = MAX_ENTRY_DIGITS;
 
   private state: CalculatorState = INITIAL_STATE;
 
@@ -40,22 +40,17 @@ export class CalculatorEngine {
   }
 
   inputDigit(digit: string): void {
-    if (!/^[0-9]$/.test(digit)) return;
-
     const { text, pending } = this.typingBase();
-    if (countDigits(text) >= CalculatorEngine.MAX_ENTRY_DIGITS) return;
 
-    this.enter(text === "" || text === "0" ? digit : text + digit, pending);
+    const next = appendDigit(text, digit);
+    if (next !== null) this.enter(next, pending);
   }
 
   inputDecimal(): void {
     const { text, pending } = this.typingBase();
 
-    if (text === "") {
-      this.enter("0.", pending);
-    } else if (!text.includes(".")) {
-      this.enter(`${text}.`, pending);
-    }
+    const next = appendDecimal(text);
+    if (next !== null) this.enter(next, pending);
   }
 
   toggleSign(): void {

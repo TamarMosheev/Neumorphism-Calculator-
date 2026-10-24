@@ -3,7 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { InputHandler } from "./InputHandler";
 
 const MARKUP = `
-  <button class="mode-toggle">mode</button>
+  <button class="mode-toggle" data-setting="calculator-mode">type</button>
+  <button class="mode-toggle" data-setting="appearance">look</button>
   <div class="keypad">
     <button data-action="clear">AC</button>
     <button data-action="toggle-sign">+/-</button>
@@ -42,7 +43,8 @@ describe("InputHandler", () => {
 
   describe("registration", () => {
     const simpleBindings: Array<[string, keyof InputHandler, string]> = [
-      ["mode toggle", "onModeToggle", ".mode-toggle"],
+      ["calculator-type toggle", "onCalculatorModeToggle", '[data-setting="calculator-mode"]'],
+      ["appearance toggle", "onAppearanceToggle", '[data-setting="appearance"]'],
       ["AC", "onClear", '[data-action="clear"]'],
       ["decimal", "onDecimal", '[data-action="decimal"]'],
       ["+/-", "onToggleSign", '[data-action="toggle-sign"]'],
@@ -125,7 +127,7 @@ describe("InputHandler", () => {
       expect(() => {
         handler.onClear(vi.fn());
         handler.onNumber(vi.fn());
-        handler.onModeToggle(vi.fn());
+        handler.onAppearanceToggle(vi.fn());
       }).not.toThrow();
     });
   });
@@ -161,7 +163,8 @@ describe("InputHandler", () => {
   describe("dispose", () => {
     it("stops every kind of listener", () => {
       const spies = {
-        modeToggle: vi.fn(),
+        calculatorModeToggle: vi.fn(),
+        appearanceToggle: vi.fn(),
         clear: vi.fn(),
         decimal: vi.fn(),
         toggleSign: vi.fn(),
@@ -170,7 +173,8 @@ describe("InputHandler", () => {
         number: vi.fn(),
         operator: vi.fn(),
       };
-      handler.onModeToggle(spies.modeToggle);
+      handler.onCalculatorModeToggle(spies.calculatorModeToggle);
+      handler.onAppearanceToggle(spies.appearanceToggle);
       handler.onClear(spies.clear);
       handler.onDecimal(spies.decimal);
       handler.onToggleSign(spies.toggleSign);
@@ -182,7 +186,8 @@ describe("InputHandler", () => {
       handler.dispose();
 
       for (const selector of [
-        ".mode-toggle",
+        '[data-setting="calculator-mode"]',
+        '[data-setting="appearance"]',
         '[data-action="clear"]',
         '[data-action="decimal"]',
         '[data-action="toggle-sign"]',
@@ -239,7 +244,7 @@ describe("InputHandler", () => {
 
       handler.onClear(vi.fn());
       handler.onNumber(vi.fn());
-      handler.onModeToggle(vi.fn());
+      handler.onAppearanceToggle(vi.fn());
 
       expect(spy).not.toHaveBeenCalled();
       spy.mockRestore();

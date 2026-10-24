@@ -127,6 +127,14 @@ body::after {
   padding: 24px 16px;
 }
 
+/* The two setting toggles (calculator type, appearance): the same pill twice, stacked */
+.settings {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
 /* Mode toggle: raised pill with a blue knob on the right */
 .mode-toggle {
   display: flex;
@@ -196,6 +204,11 @@ body::after {
   display: contents;
 }
 
+/* PRO-only row: display: contents would override the hidden attribute, so hide it explicitly */
+.keypad__row[hidden] {
+  display: none;
+}
+
 .btn {
   height: 48px;
   margin: 0;
@@ -263,8 +276,9 @@ body::after {
   gap: 12px;
   width: 224px;
   max-width: 100%;
-  height: 76px;
+  height: 96px;
   margin: 0 auto;
+  position: relative;
   padding: 0 18px 0 20px;
   border-radius: 22px;
   background: linear-gradient(145deg, var(--disp-a), var(--disp-b));
@@ -275,6 +289,25 @@ body::after {
     box-shadow var(--theme-duration) ease,
     --disp-a var(--theme-duration) ease,
     --disp-b var(--theme-duration) ease;
+}
+
+/* Expression line (NORMAL and PRO): small, muted, left-aligned with the value; long ones scroll (UI keeps the end in view) */
+.display__expression {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  right: 18px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--text-operator);
+  transition: color var(--theme-duration) ease;
+}
+
+.display__expression::-webkit-scrollbar {
+  display: none;
 }
 
 .display__value {

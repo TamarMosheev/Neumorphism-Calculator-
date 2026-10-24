@@ -12,6 +12,14 @@ function settleCancellation(result: number, left: number, right: number): number
   return Math.abs(result) <= CANCELLATION_NOISE * scale ? 0 : result;
 }
 
+/** How each operator is written in an expression line. Shared by NORMAL and PRO so both read the same. */
+export const OPERATOR_SYMBOLS: Record<Operator, string> = {
+  add: "+",
+  subtract: "−",
+  multiply: "×",
+  divide: "÷",
+};
+
 export const OPERATIONS: Record<Operator, (left: number, right: number) => number> = {
   add: (left, right) => settleCancellation(left + right, left, right),
   subtract: (left, right) => settleCancellation(left - right, left, right),

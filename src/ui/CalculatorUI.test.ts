@@ -4,11 +4,18 @@ import { CalculatorUI } from "./CalculatorUI";
 import { DisplayFitter } from "./DisplayFitter";
 
 const MARKUP = `
-  <button class="mode-toggle" role="switch" aria-checked="false">
+  <button class="mode-toggle" data-setting="calculator-mode" role="switch" aria-checked="false">
     <span class="mode-toggle__label">NORMAL MODE</span>
+  </button>
+  <button class="mode-toggle" data-setting="appearance" role="switch" aria-checked="false">
+    <span class="mode-toggle__label">LIGHT MODE</span>
   </button>
   <output class="display__value">0</output>
 `;
+
+const pill = (setting: string, parent: ParentNode = document): HTMLElement => parent.querySelector<HTMLElement>(`[data-setting="${setting}"]`)!;
+const pillText = (setting: string, parent: ParentNode = document): string | null | undefined =>
+  pill(setting, parent).querySelector(".mode-toggle__label")?.textContent;
 
 describe("CalculatorUI", () => {
   let ui: CalculatorUI;
@@ -23,23 +30,51 @@ describe("CalculatorUI", () => {
     expect(document.querySelector(".display__value")?.textContent).toBe("123.45");
   });
 
-  it("renders pro mode label and aria state", () => {
-    ui.renderMode("pro");
-    expect(document.querySelector(".mode-toggle__label")?.textContent).toBe("PRO MODE");
-    expect(document.querySelector(".mode-toggle")?.getAttribute("aria-checked")).toBe("true");
+  describe("the appearance pill", () => {
+    it("shows DARK MODE and switches on for the dark appearance", () => {
+      ui.renderAppearance("dark");
+      expect(pillText("appearance")).toBe("DARK MODE");
+      expect(pill("appearance").getAttribute("aria-checked")).toBe("true");
+    });
+
+    it("shows LIGHT MODE and switches off for the light appearance", () => {
+      ui.renderAppearance("dark");
+      ui.renderAppearance("light");
+      expect(pillText("appearance")).toBe("LIGHT MODE");
+      expect(pill("appearance").getAttribute("aria-checked")).toBe("false");
+    });
   });
 
-  it("renders normal mode label and aria state", () => {
-    ui.renderMode("pro");
-    ui.renderMode("normal");
-    expect(document.querySelector(".mode-toggle__label")?.textContent).toBe("NORMAL MODE");
-    expect(document.querySelector(".mode-toggle")?.getAttribute("aria-checked")).toBe("false");
+  describe("the calculator-type pill", () => {
+    it("shows PRO MODE and switches on for the PRO calculator", () => {
+      ui.renderCalculatorMode("pro");
+      expect(pillText("calculator-mode")).toBe("PRO MODE");
+      expect(pill("calculator-mode").getAttribute("aria-checked")).toBe("true");
+    });
+
+    it("shows NORMAL MODE and switches off for the NORMAL calculator", () => {
+      ui.renderCalculatorMode("pro");
+      ui.renderCalculatorMode("normal");
+      expect(pillText("calculator-mode")).toBe("NORMAL MODE");
+      expect(pill("calculator-mode").getAttribute("aria-checked")).toBe("false");
+    });
+  });
+
+  it("renders each pill without touching the other", () => {
+    ui.renderCalculatorMode("pro");
+    expect(pillText("appearance")).toBe("LIGHT MODE");
+    expect(pill("appearance").getAttribute("aria-checked")).toBe("false");
+
+    ui.renderAppearance("dark");
+    expect(pillText("calculator-mode")).toBe("PRO MODE");
+    expect(pill("calculator-mode").getAttribute("aria-checked")).toBe("true");
   });
 
   it("does not throw when the markup is missing", () => {
     document.body.innerHTML = "";
     expect(() => ui.renderDisplay("1")).not.toThrow();
-    expect(() => ui.renderMode("pro")).not.toThrow();
+    expect(() => ui.renderAppearance("dark")).not.toThrow();
+    expect(() => ui.renderCalculatorMode("pro")).not.toThrow();
   });
 
   describe("display fitting", () => {
@@ -80,8 +115,11 @@ describe("CalculatorUI", () => {
 
 describe("CalculatorUI scope and listener lifecycle", () => {
   const MARKUP_COPY = `
-    <button class="mode-toggle" role="switch" aria-checked="false">
+    <button class="mode-toggle" data-setting="calculator-mode" role="switch" aria-checked="false">
       <span class="mode-toggle__label">NORMAL MODE</span>
+    </button>
+    <button class="mode-toggle" data-setting="appearance" role="switch" aria-checked="false">
+      <span class="mode-toggle__label">LIGHT MODE</span>
     </button>
     <output class="display__value">0</output>
   `;
@@ -107,12 +145,15 @@ describe("CalculatorUI scope and listener lifecycle", () => {
 
   it("renders only inside its own root", () => {
     ui.renderDisplay("42");
-    ui.renderMode("pro");
+    ui.renderAppearance("dark");
+    ui.renderCalculatorMode("pro");
 
     expect(root.querySelector(".display__value")?.textContent).toBe("42");
-    expect(root.querySelector(".mode-toggle__label")?.textContent).toBe("PRO MODE");
+    expect(pillText("appearance", root)).toBe("DARK MODE");
+    expect(pillText("calculator-mode", root)).toBe("PRO MODE");
     expect(otherRoot.querySelector(".display__value")?.textContent).toBe("0");
-    expect(otherRoot.querySelector(".mode-toggle__label")?.textContent).toBe("NORMAL MODE");
+    expect(pillText("appearance", otherRoot)).toBe("LIGHT MODE");
+    expect(pillText("calculator-mode", otherRoot)).toBe("NORMAL MODE");
   });
 
   it("fits only its own display", () => {

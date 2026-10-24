@@ -121,23 +121,23 @@ describe("percentage through the real page (HTML -> InputHandler -> Engine -> UI
     });
   });
 
-  describe("mode toggle through the real page", () => {
-    const toggle = (): HTMLButtonElement => document.querySelector(".mode-toggle")!;
-    const label = (): string => document.querySelector(".mode-toggle__label")?.textContent ?? "";
+  describe("appearance toggle through the real page", () => {
+    const toggle = (): HTMLButtonElement => document.querySelector('[data-setting="appearance"]')!;
+    const label = (): string => document.querySelector('[data-setting="appearance"] .mode-toggle__label')?.textContent ?? "";
 
-    it("starts in NORMAL MODE", () => {
-      expect(label()).toBe("NORMAL MODE");
+    it("starts in the LIGHT appearance", () => {
+      expect(label()).toBe("LIGHT MODE");
       expect(document.body.classList.contains("theme-pro")).toBe(false);
     });
 
-    it("switches to PRO MODE and back", () => {
+    it("switches to the DARK appearance and back", () => {
       toggle().click();
-      expect(label()).toBe("PRO MODE");
+      expect(label()).toBe("DARK MODE");
       expect(toggle().getAttribute("aria-checked")).toBe("true");
       expect(document.body.classList.contains("theme-pro")).toBe(true);
 
       toggle().click();
-      expect(label()).toBe("NORMAL MODE");
+      expect(label()).toBe("LIGHT MODE");
       expect(toggle().getAttribute("aria-checked")).toBe("false");
       expect(document.body.classList.contains("theme-pro")).toBe(false);
     });
@@ -189,10 +189,10 @@ describe("listener lifecycle", () => {
     app.start();
 
     clickIn(document, '[data-number="5"]');
-    clickIn(document, ".mode-toggle");
+    clickIn(document, '[data-setting="appearance"]');
 
     expect(engine.displayValue).toBe("5");
-    expect(themeManager.mode).toBe("pro");
+    expect(themeManager.appearance).toBe("dark");
   });
 
   it("stops reacting to clicks after dispose()", () => {
@@ -201,11 +201,11 @@ describe("listener lifecycle", () => {
     app.dispose();
 
     clickIn(document, '[data-number="5"]');
-    clickIn(document, ".mode-toggle");
+    clickIn(document, '[data-setting="appearance"]');
 
     expect(engine.displayValue).toBe("0");
     expect(display()).toBe("0");
-    expect(themeManager.mode).toBe("normal");
+    expect(themeManager.appearance).toBe("light");
   });
 
   it("is safe to dispose twice, or before start()", () => {

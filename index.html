@@ -7,18 +7,32 @@
 </head>
 <body>
   <main class="app">
-    <button type="button" class="mode-toggle" role="switch" aria-checked="false" aria-label="Switch calculator mode">
-      <span class="mode-toggle__label">NORMAL MODE</span>
-      <span class="mode-toggle__knob" aria-hidden="true"></span>
-    </button>
+    <div class="settings" role="group" aria-label="Calculator settings">
+      <button type="button" class="mode-toggle" role="switch" aria-checked="false" aria-label="Calculator type: PRO MODE" data-setting="calculator-mode">
+        <span class="mode-toggle__label">NORMAL MODE</span>
+        <span class="mode-toggle__knob" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="mode-toggle" role="switch" aria-checked="false" aria-label="Appearance: DARK MODE" data-setting="appearance">
+        <span class="mode-toggle__label">LIGHT MODE</span>
+        <span class="mode-toggle__knob" aria-hidden="true"></span>
+      </button>
+    </div>
 
     <section class="calculator" aria-label="Calculator">
       <div class="display">
+        <output class="display__expression" aria-label="Expression" aria-live="off"></output>
         <output class="display__value" aria-live="polite">0</output>
         <span class="display__icon" aria-hidden="true"></span>
       </div>
 
       <div class="keypad">
+        <div class="keypad__row" data-pro-only hidden>
+          <button type="button" class="btn btn--function" data-action="open-parenthesis" aria-label="Open parenthesis">(</button>
+          <button type="button" class="btn btn--function" data-action="close-parenthesis" aria-label="Close parenthesis">)</button>
+          <button type="button" class="btn btn--function" data-action="square" aria-label="Square">x²</button>
+          <button type="button" class="btn btn--function" data-action="square-root" aria-label="Square root">√</button>
+        </div>
+
         <div class="keypad__row">
           <button type="button" class="btn btn--function" data-action="clear">AC</button>
           <button type="button" class="btn btn--function" data-action="toggle-sign">+/-</button>
