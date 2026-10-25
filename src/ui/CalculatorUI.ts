@@ -14,6 +14,9 @@ const APPEARANCE_LABELS: Record<Appearance, string> = {
   dark: "DARK MODE",
 };
 
+/** Set on <html> by the inline script in index.html while a saved PRO mode is restored; the stylesheet hides the app. */
+const RESTORING_MODE_CLASS = "restoring-mode";
+
 /** Renders calculator state into one calculator root. Contains no calculation logic. */
 export class CalculatorUI {
   private resizeWatch: AbortController | null = null;
@@ -30,6 +33,11 @@ export class CalculatorUI {
     for (const proOnly of this.root.querySelectorAll<HTMLElement>("[data-pro-only]")) {
       proOnly.hidden = mode !== "pro";
     }
+  }
+
+  /** Shows the calculator once the saved mode is rendered (index.html hides it while a saved PRO mode is restored). */
+  reveal(): void {
+    document.documentElement.classList.remove(RESTORING_MODE_CLASS);
   }
 
   renderAppearance(appearance: Appearance): void {

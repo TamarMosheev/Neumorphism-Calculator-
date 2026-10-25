@@ -4,8 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Neumorphism Calculator</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <!-- Inline, because the stylesheet is not applied yet when the first frame is painted (in development it is injected by JavaScript). Used with the inline script at the start of <body>. -->
+  <style>html.restoring-mode .app{visibility:hidden}</style>
 </head>
 <body>
+  <!-- Runs before the first paint. A remembered dark appearance is applied at once, so the page never flashes light and fades to dark. A remembered PRO mode hides the calculator until the app has rendered it (CalculatorUI.reveal; 2 s fallback), so the NORMAL layout never shows first. The keys and class names must match UserPreferences, ThemeManager and CalculatorUI (a test checks this). -->
+  <script>try{var s=localStorage,h=document.documentElement;if(s.getItem("calculator.appearance")==="dark")document.body.classList.add("theme-pro");if(s.getItem("calculator.mode")==="pro"){h.classList.add("restoring-mode");setTimeout(function(){h.classList.remove("restoring-mode")},2000)}}catch(e){}</script>
   <main class="app">
     <div class="settings" role="group" aria-label="Calculator settings">
       <button type="button" class="mode-toggle" role="switch" aria-checked="false" aria-label="Calculator type: PRO MODE" data-setting="calculator-mode">

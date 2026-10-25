@@ -9,9 +9,16 @@ const DARK_APPEARANCE_CLASS = "theme-pro";
 
 /** Light or dark appearance. Knows nothing about which calculator is active. */
 export class ThemeManager {
-  private current: Appearance = "light";
+  private current: Appearance;
 
-  constructor(private readonly root: HTMLElement = document.body) {}
+  /** `initial` is the appearance to start in (a remembered one); light when none is given. */
+  constructor(
+    private readonly root: HTMLElement = document.body,
+    initial: Appearance = "light",
+  ) {
+    this.current = initial;
+    this.root.classList.toggle(DARK_APPEARANCE_CLASS, initial === "dark");
+  }
 
   get appearance(): Appearance {
     return this.current;

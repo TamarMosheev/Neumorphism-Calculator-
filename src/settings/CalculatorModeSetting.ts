@@ -6,7 +6,12 @@ export type CalculatorMode = "normal" | "pro";
  * change or reset a calculator, and changing the appearance can never change the mode.
  */
 export class CalculatorModeSetting {
-  private current: CalculatorMode = "normal";
+  private current: CalculatorMode;
+
+  /** `initial` is the mode to start in (a remembered one); NORMAL when none is given. */
+  constructor(initial: CalculatorMode = "normal") {
+    this.current = initial;
+  }
 
   get mode(): CalculatorMode {
     return this.current;

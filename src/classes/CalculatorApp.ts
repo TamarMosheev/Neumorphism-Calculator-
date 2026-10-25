@@ -3,6 +3,7 @@ import { CalculatorEngine } from "../calculator/CalculatorEngine";
 import { NormalCalculator } from "../calculator/NormalCalculator";
 import { ProCalculator } from "../calculator/pro/ProCalculator";
 import { CalculatorModeSetting } from "../settings/CalculatorModeSetting";
+import type { UserPreferences } from "../settings/UserPreferences";
 import { CalculatorUI } from "../ui/CalculatorUI";
 import { ThemeManager } from "../themes/ThemeManager";
 import { InputHandler } from "./InputHandler";
@@ -25,6 +26,8 @@ export class CalculatorApp {
     private readonly inputHandler: InputHandler,
     private readonly calculatorMode: CalculatorModeSetting = new CalculatorModeSetting(),
     private readonly proCalculator: ProCalculator = new ProCalculator(),
+    /** Where the two settings are remembered; without it they last until the page closes. */
+    private readonly preferences: UserPreferences | null = null,
   ) {
     this.normalCalculator = new NormalCalculator(engine);
   }
@@ -38,6 +41,7 @@ export class CalculatorApp {
     this.ui.renderAppearance(this.themeManager.appearance);
     this.ui.watchResize();
     this.refreshDisplay();
+    this.ui.reveal();
 
     this.inputHandler.onNumber((digit) => this.apply((calculator) => calculator.inputDigit(digit)));
     this.inputHandler.onDecimal(() => this.apply((calculator) => calculator.inputDecimal()));
@@ -54,10 +58,16 @@ export class CalculatorApp {
     // The two settings are independent. Both calculators stay alive, so switching modes only changes which
     // one the keypad drives and the display shows: neither is reset, and the appearance is not involved.
     this.inputHandler.onCalculatorModeToggle(() => {
-      this.ui.renderCalculatorMode(this.calculatorMode.toggle());
+      const mode = this.calculatorMode.toggle();
+      this.preferences?.saveCalculatorMode(mode);
+      this.ui.renderCalculatorMode(mode);
       this.refreshDisplay();
     });
-    this.inputHandler.onAppearanceToggle(() => this.ui.renderAppearance(this.themeManager.toggle()));
+    this.inputHandler.onAppearanceToggle(() => {
+      const appearance = this.themeManager.toggle();
+      this.preferences?.saveAppearance(appearance);
+      this.ui.renderAppearance(appearance);
+    });
   }
 
   /** Removes every listener the app registered. Safe to call more than once. */
