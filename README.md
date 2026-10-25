@@ -1,12 +1,16 @@
 # Neumorphism Calculator
 
+**[Try the Live Calculator](https://neumorphism-calculator-theta.vercel.app/)** · [Screenshots](#screenshots) · [Features](#features) · [Getting started](#getting-started)
+
 A calculator with a soft **neumorphic** interface, written in strict TypeScript with no UI framework. It offers two calculators in one page: a **NORMAL** calculator that evaluates left to right like a classic pocket calculator, and a **PRO** calculator with real operator precedence, parentheses, squares and square roots. Both show the result **live** while you type, and both are fully usable from the mouse or the keyboard.
 
 The project is built as an exercise in clean, testable design: calculation logic is completely separate from the DOM, and the whole thing is covered by an automated test suite.
 
 ## Live demo
 
-**Coming soon.** The project has not been deployed yet.
+### [Try the Live Calculator](https://neumorphism-calculator-theta.vercel.app/)
+
+Hosted on Vercel. Switch between NORMAL and PRO, and between LIGHT and DARK, with the two toggles above the calculator; your choice is remembered on that device.
 
 ## Screenshots
 
@@ -156,4 +160,4 @@ Tests live next to the code they cover, in `*.test.ts` files.
 
 ## Status
 
-Version 0.1.0. Both calculators, both themes, persistence and keyboard input are working. There is no deployed demo and no screenshots yet, and no license has been specified.
+Version 0.1.0. Both calculators, both themes, persistence and keyboard input are working. A live demo and screenshots are available above. No license has been specified.
