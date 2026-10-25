@@ -92,12 +92,12 @@ describe("the − key makes a sign where an operand is expected", () => {
 
   it("the typed number after a sign is an ordinary number", () => {
     expect(run("-12.5").expressionText).toBe("−12.5");
-    expect(run("-12.5").displayValue).toBe("12.5");
+    expect(run("-12.5").displayValue).toBe("-12.5");
   });
 
   it("shows the running value of a finished group on the main line", () => {
     expect(run("-(5+3)").displayValue).toBe("-8");
-    expect(run("-(5+3").displayValue).toBe("3");
+    expect(run("-(5+3").displayValue).toBe("-8");
   });
 });
 

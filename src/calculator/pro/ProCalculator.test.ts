@@ -169,11 +169,11 @@ describe("arithmetic and operator precedence", () => {
     it.each([
       ["2", "2", "2"],
       ["2+", "2", "2 +"],
-      ["2+3", "3", "2 + 3"],
+      ["2+3", "5", "2 + 3"],
       ["2+3*", "5", "2 + 3 ×"],
-      ["2+3*4", "4", "2 + 3 × 4"],
+      ["2+3*4", "14", "2 + 3 × 4"],
       ["(2+3)", "5", "(2 + 3)"],
-      ["(2+3", "3", "(2 + 3"],
+      ["(2+3", "5", "(2 + 3"],
       ["3²", "9", "3²"],
       ["2+3²", "11", "2 + 3²"],
     ])("%s", (keys, display, expression) => {
@@ -374,7 +374,7 @@ describe("square roots", () => {
 
       const filled = run("√81");
       expect(filled.expressionText).toBe("√81");
-      expect(filled.displayValue).toBe("81");
+      expect(filled.displayValue).toBe("9");
       expect(resultOf("√81=")).toBe("9");
     });
 
@@ -464,7 +464,7 @@ describe("percentages", () => {
 
     it("shows the worked-out number as soon as % is pressed, like NORMAL", () => {
       const calculator = run("200+10%");
-      expect(calculator.displayValue).toBe("20");
+      expect(calculator.displayValue).toBe("220");
       expect(calculator.expressionText).toBe("200 + 20");
       expect(calculator.phase).toBe("building");
     });
@@ -552,7 +552,7 @@ describe("percentages", () => {
 
   it("shows the worked-out percentage rounded for display, like every other number", () => {
     // 10 % of 14 is 1.4000000000000001 in binary floating point
-    expect(run("2+3*4+10%").displayValue).toBe("1.4");
+    expect(run("2+3*4+10%").displayValue).toBe("15.4");
     expect(run("2+3*4+10%").expressionText).toBe("2 + 3 × 4 + 1.4");
   });
 
@@ -655,12 +655,12 @@ describe("decimals and entry limits (same rules as NORMAL)", () => {
   });
 
   it("gives every operand its own limit", () => {
-    expect(run("123456789012345+999999999999999999").displayValue).toBe("999999999999999");
+    expect(run("123456789012345+999999999999999999").expressionText).toBe("123456789012345 + 999999999999999");
   });
 
   it("starts a decimal operand after an operator, a group or a finished operand", () => {
-    expect(run("2+.").displayValue).toBe("0.");
-    expect(run("(.").displayValue).toBe("0.");
+    expect(run("2+.").expressionText).toBe("2 + 0.");
+    expect(run("(.").expressionText).toBe("(0.");
     expect(run("(1).").expressionText).toBe("(1) × 0.");
   });
 });
@@ -858,11 +858,11 @@ describe("state transitions", () => {
     ["", "building", "0", ""],
     ["5", "building", "5", "5"],
     ["5+", "building", "5", "5 +"],
-    ["5+3", "building", "3", "5 + 3"],
+    ["5+3", "building", "8", "5 + 3"],
     ["5+3=", "result", "8", "5 + 3 ="],
     ["5+3=C", "building", "0", ""],
     ["5+3=+", "building", "8", "8 +"],
-    ["5+3=+2", "building", "2", "8 + 2"],
+    ["5+3=+2", "building", "10", "8 + 2"],
     ["5/0=", "error", "Error", "5 ÷ 0"],
     ["5/0=C", "building", "0", ""],
     ["(", "building", "0", "("],
@@ -1007,7 +1007,7 @@ describe("independence from the NORMAL calculator", () => {
       }
     }
     // the left side is "worked out" as 50, so 10% of it is 5
-    expect(press(new ProCalculator(new FixedEvaluator()), "1+10%").displayValue).toBe("5");
+    expect(press(new ProCalculator(new FixedEvaluator()), "1+10%").expressionText).toBe("1 + 5");
   });
 
   describe("source", () => {

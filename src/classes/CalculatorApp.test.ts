@@ -88,25 +88,25 @@ describe("percentage through the real page (HTML -> InputHandler -> Engine -> UI
   describe("step-by-step display trace (operand and operator after every click)", () => {
     it("A + B%: % converts B to a share of A, = completes the addition", () => {
       expect(clickKeys("AC 2 0 0 + 1 0 % =")).toEqual(
-        ["0", "2", "20", "200", "200", "1", "10", "20", "220"],
+        ["0", "2", "20", "200", "200", "201", "210", "220", "220"],
       );
     });
 
     it("A - B%: % converts B to a share of A, = completes the subtraction", () => {
       expect(clickKeys("AC 2 0 0 - 1 0 % =")).toEqual(
-        ["0", "2", "20", "200", "200", "1", "10", "20", "180"],
+        ["0", "2", "20", "200", "200", "199", "190", "180", "180"],
       );
     });
 
     it("A × B%: % converts B to a plain fraction", () => {
       expect(clickKeys("AC 2 0 0 × 1 0 % =")).toEqual(
-        ["0", "2", "20", "200", "200", "1", "10", "0.1", "20"],
+        ["0", "2", "20", "200", "200", "200", "2000", "20", "20"],
       );
     });
 
     it("A ÷ B%: % converts B to a plain fraction", () => {
       expect(clickKeys("AC 2 0 0 ÷ 1 0 % =")).toEqual(
-        ["0", "2", "20", "200", "200", "1", "10", "0.1", "2000"],
+        ["0", "2", "20", "200", "200", "200", "20", "2000", "2000"],
       );
     });
 
@@ -116,7 +116,7 @@ describe("percentage through the real page (HTML -> InputHandler -> Engine -> UI
 
     it("pressing = BEFORE % applies % to the finished result (210 -> 2.1)", () => {
       expect(clickKeys("AC 2 0 0 + 1 0 = %")).toEqual(
-        ["0", "2", "20", "200", "200", "1", "10", "210", "2.1"],
+        ["0", "2", "20", "200", "200", "201", "210", "210", "2.1"],
       );
     });
   });

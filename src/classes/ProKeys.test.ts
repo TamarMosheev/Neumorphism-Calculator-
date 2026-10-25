@@ -191,19 +191,19 @@ describe("switching modes preserves state with the PRO-only keys in play", () =>
   it("keeps a half-built PRO expression and a half-typed NORMAL sum, separately", () => {
     startApp();
     press("123+4");
-    expect(displayText()).toBe("4");
+    expect(displayText()).toBe("127");
 
     typePill().click();
     press("(2+3");
-    expect(displayText()).toBe("3");
+    expect(displayText()).toBe("5");
 
     typePill().click(); // back to NORMAL: untouched
-    expect(displayText()).toBe("4");
+    expect(displayText()).toBe("127");
     press("=");
     expect(displayText()).toBe("127");
 
     typePill().click(); // PRO: the open group is still there
-    expect(displayText()).toBe("3");
+    expect(displayText()).toBe("5");
     press(")*4=");
     expect(displayText()).toBe("20");
   });
@@ -229,12 +229,12 @@ describe("the click path, key by key: button -> InputHandler -> CalculatorApp ->
     expect(trail("5^=")).toEqual(["5", "25", "25"]);
   });
 
-  it("√ 8 1 = shows 0, 8, 81, then 9", () => {
-    expect(trail("R81=")).toEqual(["0", "8", "81", "9"]);
+  it("√ 8 1 = shows 0, √8, √81 (live), then 9", () => {
+    expect(trail("R81=")).toEqual(["0", "2.82842712474619", "9", "9"]);
   });
 
-  it("( 2 + 3 ) × 4 = shows 0, 2, 2, 3, 5, 5, 4, then 20", () => {
-    expect(trail("(2+3)*4=")).toEqual(["0", "2", "2", "3", "5", "5", "4", "20"]);
+  it("( 2 + 3 ) × 4 = shows the running value after every key, then 20", () => {
+    expect(trail("(2+3)*4=")).toEqual(["0", "2", "2", "5", "5", "5", "20", "20"]);
   });
 
   it.each(PRO_KEYS)("%s is bound to a real handler: pressing it changes what the next presses calculate", (action) => {

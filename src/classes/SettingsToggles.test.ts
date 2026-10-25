@@ -314,20 +314,20 @@ describe("each mode keeps its own calculation", () => {
   it("switching modes preserves each calculator's own calculation", () => {
     startApp();
     press("123+4");
-    expect(displayText()).toBe("4");
+    expect(displayText()).toBe("127");
 
     typePill().click(); // PRO starts on its own, empty calculation
     expect(displayText()).toBe("0");
     press("9+8");
-    expect(displayText()).toBe("8");
+    expect(displayText()).toBe("17");
 
     typePill().click(); // back to NORMAL: its half-typed sum is still there
-    expect(displayText()).toBe("4");
+    expect(displayText()).toBe("127");
     press("=");
     expect(displayText()).toBe("127");
 
     typePill().click(); // and PRO's is still there too
-    expect(displayText()).toBe("8");
+    expect(displayText()).toBe("17");
     press("=");
     expect(displayText()).toBe("17");
   });

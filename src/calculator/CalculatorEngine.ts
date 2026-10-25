@@ -9,6 +9,7 @@ import {
   INITIAL_STATE,
   negate,
   operandNumber,
+  previewTextOf,
   typed,
 } from "./CalculatorState";
 import { appendDecimal, appendDigit, MAX_ENTRY_DIGITS } from "./NumberEntry";
@@ -29,6 +30,11 @@ export class CalculatorEngine {
 
   get displayValue(): string {
     return displayTextOf(this.state);
+  }
+
+  /** The value of the calculation so far, for the large display; `displayValue` stays the operand itself. */
+  get previewValue(): string {
+    return previewTextOf(this.state);
   }
 
   get phase(): CalculatorPhase {

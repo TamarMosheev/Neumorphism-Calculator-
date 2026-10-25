@@ -1,6 +1,6 @@
 import { negateText } from "./NumberEntry";
 import { formatNumber } from "./NumberFormatter";
-import type { Operator } from "./Operator";
+import { calculate, type Operator } from "./Operator";
 
 export { countDigits } from "./NumberEntry";
 
@@ -69,6 +69,19 @@ export function displayTextOf(state: CalculatorState): string {
     default:
       return assertNever(state);
   }
+}
+
+/**
+ * What the large display shows live. It equals `displayTextOf`, except while the second operand of a pending
+ * operation is being entered: then it is the value so far, worked out with the same `calculate` that "=" and
+ * chaining use, so evaluation stays left to right ("2 + 3 × 4" previews 20). A calculation that has no
+ * value yet (5 ÷ 0) keeps showing the operand; only "=" reports the error. Reads the state, never changes it.
+ */
+export function previewTextOf(state: CalculatorState): string {
+  if (state.kind !== "entering" || state.pending === null) return displayTextOf(state);
+
+  const value = calculate(state.pending.operator, state.pending.firstOperand, operandNumber(state.operand));
+  return value === null ? displayTextOf(state) : formatNumber(value);
 }
 
 function assertNever(value: never): never {

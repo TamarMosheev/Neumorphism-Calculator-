@@ -27,8 +27,9 @@ export class NormalCalculator implements BasicCalculator {
 
   constructor(private readonly engine: CalculatorEngine = new CalculatorEngine()) {}
 
+  /** The value of the calculation so far (left to right); a lone number is shown exactly as typed. */
   get displayValue(): string {
-    return this.engine.displayValue;
+    return this.engine.previewValue;
   }
 
   /** The expression so far, in the notation of PRO's line: "2 + 3 × 4", and "2 + 3 × 4 =" once finished. */

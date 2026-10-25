@@ -233,7 +233,7 @@ describe("state is preserved when switching", () => {
 
     typePill().click(); // NORMAL: its own sum, with its own expression
     expect(expression()).toBe("123 + 4");
-    expect(value()).toBe("4");
+    expect(value()).toBe("127");
     press("=");
     expect(value()).toBe("127");
     expect(expression()).toBe("123 + 4 =");

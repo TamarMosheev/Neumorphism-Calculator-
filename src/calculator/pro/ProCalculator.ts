@@ -69,7 +69,10 @@ export class ProCalculator implements BasicCalculator {
     return this.state.kind;
   }
 
-  /** The current number: what is being typed, else the value of the expression so far, else the last number. */
+  /**
+   * What the large display shows: the value of the expression so far (updated live, before "="), the result
+   * after "=", or "Error". A lone number being typed shows exactly as typed ("5.", "0.50").
+   */
   get displayValue(): string {
     const state = this.state;
 
@@ -79,7 +82,9 @@ export class ProCalculator implements BasicCalculator {
       case "result":
         return formatNumber(state.value);
       case "building":
-        return state.entry !== null ? entryText(state.entry) : this.currentValue(state.tokens);
+        return state.entry !== null && state.tokens.length === 0
+          ? entryText(state.entry)
+          : this.currentValue(withEntry(state));
     }
   }
 
@@ -305,7 +310,11 @@ export class ProCalculator implements BasicCalculator {
     return this.state.kind === "building" ? withEntry(this.state) : [];
   }
 
-  /** The running value, like NORMAL after an operator: the expression so far, without its unfinished tail. */
+  /**
+   * The live preview: the value of the expression so far, without its unfinished tail ("5 +" previews 5).
+   * Groups still open are closed in a local copy only, so "(5 + 3" previews 8 while the stored tokens stay as typed.
+   * Read-only: it evaluates copies and never touches the state.
+   */
   private currentValue(tokens: Tokens): string {
     let end = tokens.length;
     while (end > 0 && UNFINISHED_ENDINGS.has(tokens[end - 1]?.kind ?? "")) end--;
@@ -313,10 +322,11 @@ export class ProCalculator implements BasicCalculator {
     const finished = tokens.slice(0, end);
     if (finished.length === 0) return "0";
 
-    const evaluation = this.evaluator.evaluate(finished);
+    const closings = Array.from({ length: unmatchedOpenings(finished) }, () => CLOSE_PARENTHESIS);
+    const evaluation = this.evaluator.evaluate([...finished, ...closings]);
     if (evaluation.ok) return formatNumber(evaluation.value);
 
-    // e.g. an unclosed group or a math failure: show the last number entered
+    // a math failure (5 ÷ 0, √ of a negative): "=" reports it, the preview keeps the last number entered
     for (let index = finished.length - 1; index >= 0; index--) {
       const token = finished[index];
       if (token?.kind === "number") return token.text ?? formatNumber(token.value);

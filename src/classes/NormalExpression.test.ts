@@ -79,7 +79,7 @@ describe("NORMAL shows the expression above the value", () => {
   it("200 + 10 % = shows the percentage as pressed, and 220", () => {
     press("200+10%");
     expect(expression()).toBe("200 + 10%");
-    expect(value()).toBe("20");
+    expect(value()).toBe("220");
 
     press("=");
     expect(expression()).toBe("200 + 10% =");
@@ -154,7 +154,7 @@ describe("NORMAL stays a standard calculator", () => {
     press("2+3");
     press("()^R"); // clicks on the hidden keys must do nothing
     expect(expression()).toBe("2 + 3");
-    expect(value()).toBe("3");
+    expect(value()).toBe("5");
   });
 
   it("still has exactly the original 19 visible keys", () => {
@@ -176,7 +176,7 @@ describe("switching between NORMAL and PRO keeps each expression", () => {
 
     typePill().click(); // NORMAL again
     expect(expression()).toBe("2 + 3 × 4");
-    expect(value()).toBe("4");
+    expect(value()).toBe("20");
     press("=");
     expect(expression()).toBe("2 + 3 × 4 =");
     expect(value()).toBe("20");
@@ -208,7 +208,7 @@ describe("LIGHT/DARK never changes the expression or the calculation", () => {
 
     lookPill().click();
     expect(expression()).toBe("200 + 10%");
-    expect(value()).toBe("20");
+    expect(value()).toBe("220");
 
     press("=");
     lookPill().click();

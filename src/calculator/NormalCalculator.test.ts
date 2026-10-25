@@ -46,9 +46,9 @@ describe("the expression while typing, left to right", () => {
     expect(trail("2+3*4=")).toEqual([
       ["2", "2"],
       ["2 +", "2"],
-      ["2 + 3", "3"],
+      ["2 + 3", "5"],
       ["2 + 3 ×", "5"],
-      ["2 + 3 × 4", "4"],
+      ["2 + 3 × 4", "20"],
       ["2 + 3 × 4 =", "20"],
     ]);
   });
@@ -107,9 +107,9 @@ describe("percent keeps its contextual meaning, and the expression shows what wa
       "20 → 20",
       "200 → 200",
       "200 + → 200",
-      "200 + 1 → 1",
-      "200 + 10 → 10",
-      "200 + 10% → 20",
+      "200 + 1 → 201",
+      "200 + 10 → 210",
+      "200 + 10% → 220",
       "200 + 10% = → 220",
     ]);
   });
@@ -119,7 +119,7 @@ describe("percent keeps its contextual meaning, and the expression shows what wa
   });
 
   it("200 × 10 % = 20 (a plain fraction after × )", () => {
-    expect(after("200*10%")).toEqual({ expression: "200 × 10%", display: "0.1" });
+    expect(after("200*10%")).toEqual({ expression: "200 × 10%", display: "20" });
     expect(after("200*10%=")).toEqual({ expression: "200 × 10% =", display: "20" });
   });
 
@@ -136,7 +136,7 @@ describe("percent keeps its contextual meaning, and the expression shows what wa
   });
 
   it("typing after % replaces the percentage value", () => {
-    expect(after("200+10%5")).toEqual({ expression: "200 + 5", display: "5" });
+    expect(after("200+10%5")).toEqual({ expression: "200 + 5", display: "205" });
   });
 });
 
@@ -146,8 +146,8 @@ describe("+/− negates the number being entered, and the expression follows", (
   });
 
   it("2 + 3 +/− is 2 + −3, and again is 2 + 3", () => {
-    expect(after("2+3S")).toEqual({ expression: "2 + −3", display: "-3" });
-    expect(after("2+3SS")).toEqual({ expression: "2 + 3", display: "3" });
+    expect(after("2+3S")).toEqual({ expression: "2 + −3", display: "-1" });
+    expect(after("2+3SS")).toEqual({ expression: "2 + 3", display: "5" });
     expect(after("2+3S=")).toEqual({ expression: "2 + −3 =", display: "-1" });
   });
 
@@ -162,7 +162,7 @@ describe("+/− negates the number being entered, and the expression follows", (
   });
 
   it("negates a percentage: 200 + 10 % +/− is 200 + −10%, which is 180", () => {
-    expect(after("200+10%S")).toEqual({ expression: "200 + −10%", display: "-20" });
+    expect(after("200+10%S")).toEqual({ expression: "200 + −10%", display: "180" });
     expect(after("200+10%S=")).toEqual({ expression: "200 + −10% =", display: "180" });
   });
 });
@@ -281,7 +281,7 @@ describe("NORMAL stays a standard calculator", () => {
 });
 
 describe("the numbers are still the existing engine's: tracking the expression changes nothing", () => {
-  it("shows exactly what a bare CalculatorEngine shows after every key, over random key presses", () => {
+  it("shows exactly what a bare CalculatorEngine previews after every key, over random key presses", () => {
     const keys = "0123456789..+-*/==%SC";
     let seed = 20261024;
     const random = (): number => {
@@ -300,7 +300,7 @@ describe("the numbers are still the existing engine's: tracking the expression c
         press(bare, key);
 
         // asserted only on a mismatch: ~90,000 passing expect() calls would be slow and add nothing
-        if (tracked.displayValue !== bare.displayValue) expect({ key, tracked: tracked.displayValue }).toEqual({ key, tracked: bare.displayValue });
+        if (tracked.displayValue !== bare.previewValue) expect({ key, tracked: tracked.displayValue }).toEqual({ key, tracked: bare.previewValue });
         compared++;
       }
     }
